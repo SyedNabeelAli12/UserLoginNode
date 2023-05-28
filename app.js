@@ -32,21 +32,31 @@ const client = new MongoClient(uri, {
     }
   }
   run().catch(console.dir);
+
+  app.use((req,res,next)=>{
+    res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+  
+  //  res.status(404).json({Error:"Bad Request"
+  //  })
+  })
   app.use(bodyParser.urlencoded({extended:false}))
 app.use(bodyParser.json())
+
+
   app.use(fileUpload({
     useTempFiles : true,
     tempFileDir : '/tmp/'
   }))
 
+
+
 app.use('/user',userSign)
 
 app.use('/product',Product)
 
-app.use((req,res,next)=>{
 
-   res.status(404).json({Error:"Bad Request"
-   })
-})
 
 module.exports = app
