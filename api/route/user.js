@@ -13,6 +13,36 @@ cloudinary.config({
   secure: true,
 });
 
+// await Character.findOneAndUpdate(filter, update);
+router.post("/updateImgPath", (req, res, next) => {
+  const file = req.files.photo;
+
+  console.log(req.body);
+
+  cloudinary.uploader.upload(file?.tempFilePath, (result, error) => {
+    if (result) {
+      console.log(result.url)
+      const user = User.findOneAndUpdate(
+        { username: req.body.username },
+        { imgPath: result.url }
+      )
+        .then((result) => {
+          res.status(200).json({
+            msg: "Success",
+            userUpdated: user,
+          });
+        })
+        .catch((err) => {
+          res.status(500).json({
+            error: err,
+          });
+        });
+    } else {
+      console.log(error);
+    }
+  });
+});
+
 router.post("/sign_up", (req, res, next) => {
   const file = req.files.photo;
 
@@ -33,6 +63,10 @@ router.post("/sign_up", (req, res, next) => {
               password: hash,
               phone: req.body.phone,
               email: req.body.email,
+              name: req.body.name,
+              jobTitle: req.body.jobTitle,
+              organization: req.body.organization,
+
               userType: req.body.userType,
               imgPath: result.url,
               joinDate: getDate.toString(),
@@ -86,6 +120,9 @@ router.post("/login", (req, res, next) => {
                 {
                   username: userResult[0]?.username,
                   userType: userResult[0]?.userType,
+                  name: userResult[0]?.name,
+                  jobTitle: userResult[0]?.jobTitle,
+                  organization: userResult[0]?.organization,
                   email: userResult[0]?.email,
                   phone: userResult[0]?.phone,
                   imgPath: userResult[0]?.imgPath,
