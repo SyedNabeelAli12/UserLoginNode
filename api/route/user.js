@@ -16,12 +16,13 @@ cloudinary.config({
 // await Character.findOneAndUpdate(filter, update);
 router.post("/updateImgPath", (req, res, next) => {
   const file = req.files.photo;
+  console.log(file)
 
   console.log(req.body);
 
   cloudinary.uploader.upload(file?.tempFilePath, (result, error) => {
     if (result) {
-      console.log(result.url)
+      console.log(result)
       const user = User.findOneAndUpdate(
         { username: req.body.username },
         { imgPath: result.url }
@@ -44,7 +45,7 @@ router.post("/updateImgPath", (req, res, next) => {
 });
 
 router.post("/sign_up", (req, res, next) => {
-  const file = req.files.photo;
+  // const file = req.files.photo;
 
   console.log(req.body);
   try {
@@ -56,8 +57,8 @@ router.post("/sign_up", (req, res, next) => {
         });
       } else {
         const getDate = new Date();
-        cloudinary.uploader.upload(file?.tempFilePath, (result, error) => {
-          if (result) {
+        // cloudinary.uploader.upload(file?.tempFilePath, (result, error) => {
+        //   if (result) {
             const user = new User({
               username: req.body.username,
               password: hash,
@@ -68,7 +69,7 @@ router.post("/sign_up", (req, res, next) => {
               organization: req.body.organization,
 
               userType: req.body.userType,
-              imgPath: result.url,
+              imgPath: "",
               joinDate: getDate.toString(),
             });
             user
@@ -84,10 +85,10 @@ router.post("/sign_up", (req, res, next) => {
                   error: err,
                 });
               });
-          } else {
-            console.log(err);
-          }
-        });
+        //   } else {
+        //     console.log(err);
+        //   }
+        // });
       }
     });
   } catch (e) {
@@ -99,10 +100,10 @@ router.post("/login", (req, res, next) => {
   User.find({ username: req.body.username })
     .exec()
     .then((userResult) => {
-      console.log(userResult[0].username);
+      // console.log(userResult[0].username);
       if (userResult.length < 1) {
         return res.status(403).json({
-          Msg: "No User Found",
+          msg: "No User Found",
         });
       } else {
         bcrypt.compare(
@@ -151,7 +152,7 @@ router.post("/login", (req, res, next) => {
     })
     .catch((err) => {
       res.status(500).json({
-        error: err,
+        msg: "Internal Server Error",
       });
     });
 });
