@@ -1,10 +1,19 @@
 const express = require("express");
+const http = require("http");
+const app = express();
 const router = express.Router();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const User = require("../model/userModel");
 const jwt = require("jsonwebtoken");
 const cloudinary = require("cloudinary");
+
+
+
+
+
+
+
 
 cloudinary.config({
   cloud_name: "dlxuxs9zv",
